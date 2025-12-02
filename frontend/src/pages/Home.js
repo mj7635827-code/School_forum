@@ -27,12 +27,8 @@ const Dashboard = () => {
 
   const fetchDashboardStats = async () => {
     try {
-      const token = localStorage.getItem('token');
-      // Add timestamp to prevent caching
-      const response = await fetch(`http://localhost:5000/api/auth/dashboard-stats?t=${Date.now()}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
+      // Public stats endpoint – no auth required
+      const response = await fetch(`${getApiBaseUrl()}/api/auth/dashboard-stats?t=${Date.now()}`, {
         cache: 'no-cache'
       });
       
@@ -40,6 +36,8 @@ const Dashboard = () => {
         const data = await response.json();
         console.log('Dashboard stats:', data);
         setStats(data);
+      } else {
+        console.error('Failed to fetch dashboard stats:', response.status);
       }
     } catch (error) {
       console.error('Error fetching dashboard stats:', error);
