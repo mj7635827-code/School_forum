@@ -44,6 +44,49 @@ const Dashboard = () => {
     }
   };
 
+  const statsDisplay = [
+    { 
+      name: 'Active Users', 
+      value: stats.activeUsers,
+      color: 'text-green-600'
+    },
+    { 
+      name: 'Total Registered', 
+      value: stats.totalRegistered,
+      color: 'text-blue-600'
+    },
+    { 
+      name: 'Last Post', 
+      value: stats.lastPost
+        ? (
+          isAuthenticated ? (
+            <button
+              onClick={() => setShowUserProfile(stats.lastPost.authorId)}
+              className="text-emerald-600 hover:underline text-sm"
+            >
+              {stats.lastPost.title?.substring(0, 20)}...
+            </button>
+          ) : (
+            'Login to view latest thread'
+          )
+        )
+        : 'No posts yet',
+      color: 'text-purple-600'
+    },
+    { 
+      name: 'Newest User', 
+      value: stats.newestUser ? (
+        <button
+          onClick={() => setShowUserProfile(stats.newestUser.id)}
+          className="text-emerald-600 hover:underline"
+        >
+          {stats.newestUser.firstName} {stats.newestUser.lastName}
+        </button>
+      ) : 'No users yet',
+      color: 'text-orange-600'
+    }
+  ];
+
   const features = [
     {
       name: 'Grade-Specific Forums',
