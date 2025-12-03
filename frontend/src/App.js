@@ -5,6 +5,7 @@ import Dashboard from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ChatBox from "./pages/ChatBox";
+import PrivateChat from "./pages/PrivateChat";
 import Layout from "./components/Layout/Layout";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
@@ -54,6 +55,15 @@ function App() {
           element={
             <ProtectedRoute>
               <ChatBox />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="messages/:userId"
+          element={
+            <ProtectedRoute>
+              <PrivateChat />
             </ProtectedRoute>
           }
         />

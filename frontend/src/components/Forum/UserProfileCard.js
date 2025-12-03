@@ -152,9 +152,8 @@ const UserProfileCard = ({ userId, onClose }) => {
   };
 
   const handleSendMessage = () => {
-    // Open shared chatbox and prefill with a mention to this user
-    const mentionName = encodeURIComponent(user.firstName || '');
-    navigate(`/chatbox?mention=${mentionName}`);
+    // Open private conversation with this user
+    navigate(`/messages/${userId}`);
     onClose();
   };
 
