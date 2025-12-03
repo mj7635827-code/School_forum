@@ -152,7 +152,8 @@ const UserProfileCard = ({ userId, onClose }) => {
   };
 
   const handleSendMessage = () => {
-    navigate('/chat');
+    // Open private conversation with this user
+    navigate(`/messages/${userId}`);
     onClose();
   };
 

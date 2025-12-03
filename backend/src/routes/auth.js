@@ -734,13 +734,15 @@ router.get('/user-stats/:userId', authMiddleware, async (req, res) => {
 });
 
 // Get dashboard stats
-router.get('/dashboard-stats', authMiddleware, async (req, res) => {
+// This endpoint is intentionally public so that the homepage dashboard
+// can show real-time stats even when no user is logged in.
+router.get('/dashboard-stats', async (req, res) => {
   try {
     const db = require('../config/database');
     
     // Get active users count
     const [activeUsers] = await db.execute(
-      'SELECT COUNT(*) as count FROM users WHERE status = "active"'
+      'SELECT COUNT(*) as count FROM users WHERE status = \"active\"'
     );
     
     // Get total registered users count (all statuses)

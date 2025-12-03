@@ -27,12 +27,8 @@ const Dashboard = () => {
 
   const fetchDashboardStats = async () => {
     try {
-      const token = localStorage.getItem('token');
-      // Add timestamp to prevent caching
-      const response = await fetch(`http://localhost:5000/api/auth/dashboard-stats?t=${Date.now()}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
+      // Public stats endpoint – no auth required
+      const response = await fetch(`${getApiBaseUrl()}/api/auth/dashboard-stats?t=${Date.now()}`, {
         cache: 'no-cache'
       });
       
@@ -40,11 +36,56 @@ const Dashboard = () => {
         const data = await response.json();
         console.log('Dashboard stats:', data);
         setStats(data);
+      } else {
+        console.error('Failed to fetch dashboard stats:', response.status);
       }
     } catch (error) {
       console.error('Error fetching dashboard stats:', error);
     }
   };
+
+  const statsDisplay = [
+    { 
+      name: 'Active Users', 
+      value: stats.activeUsers,
+      color: 'text-green-600'
+    },
+    { 
+      name: 'Total Registered', 
+      value: stats.totalRegistered,
+      color: 'text-blue-600'
+    },
+    { 
+      name: 'Last Post', 
+      value: stats.lastPost
+        ? (
+          isAuthenticated ? (
+            <button
+              onClick={() => setShowUserProfile(stats.lastPost.authorId)}
+              className="text-emerald-600 hover:underline text-sm"
+            >
+              {stats.lastPost.title?.substring(0, 20)}...
+            </button>
+          ) : (
+            'Login to view latest thread'
+          )
+        )
+        : 'No posts yet',
+      color: 'text-purple-600'
+    },
+    { 
+      name: 'Newest User', 
+      value: stats.newestUser ? (
+        <button
+          onClick={() => setShowUserProfile(stats.newestUser.id)}
+          className="text-emerald-600 hover:underline"
+        >
+          {stats.newestUser.firstName} {stats.newestUser.lastName}
+        </button>
+      ) : 'No users yet',
+      color: 'text-orange-600'
+    }
+  ];
 
   const features = [
     {
