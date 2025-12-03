@@ -25,6 +25,12 @@ const ChatBox = () => {
     if (highlightId) {
       setHighlightMessageId(parseInt(highlightId));
     }
+
+    // If opened from "Send Message" on a user's profile, prefill mention
+    const mentionName = searchParams.get('mention');
+    if (mentionName && !newMessage) {
+      setNewMessage(`@${decodeURIComponent(mentionName)} `);
+    }
     
     // Poll for new messages every 3 seconds
     const interval = setInterval(() => {
