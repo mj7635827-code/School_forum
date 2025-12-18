@@ -1,0 +1,22 @@
+🚀 COPY THESE COMMANDS AFTER CREATING GITHUB REPO:
+
+Replace YOUR_USERNAME with your actual GitHub username:
+
+git remote add origin https://github.com/YOUR_USERNAME/school-forum.git
+git branch -M main
+git push -u origin main
+
+🌐 THEN GO TO RAILWAY:
+1. Visit: https://railway.app
+2. Sign up with GitHub
+3. Click "New Project"
+4. Select "Deploy from GitHub repo"
+5. Choose your "school-forum" repository
+6. Railway will auto-deploy!
+
+📋 ENVIRONMENT VARIABLES TO ADD IN RAILWAY:
+JWT_SECRET=your-super-secret-jwt-key-make-it-very-long-and-random-12345
+NODE_ENV=production
+FRONTEND_URL=https://your-frontend-url.railway.app
+
+✅ DONE! Your app will be live in ~5 minutes!
