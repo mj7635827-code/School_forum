@@ -1,0 +1,138 @@
+# School Forum System - Load Testing Configuration
+# Tests system performance under various load conditions
+
+config:
+  target: 'http://localhost:5000'
+  phases:
+    # Warm-up phase
+    - duration: 30
+      arrivalRate: 5
+      name: "Warm-up"
+    
+    # Normal load
+    - duration: 60
+      arrivalRate: 20
+      name: "Normal Load"
+    
+    # Peak load
+    - duration: 120
+      arrivalRate: 50
+      name: "Peak Load"
+    
+    # Stress test
+    - duration: 60
+      arrivalRate: 100
+      name: "Stress Test"
+    
+    # Cool down
+    - duration: 30
+      arrivalRate: 5
+      name: "Cool Down"
+
+  defaults:
+    headers:
+      Content-Type: 'application/json'
+
+scenarios:
+  # User Registration Flow (20% of traffic)
+  - name: "User Registration"
+    weight: 20
+    flow:
+      - post:
+          url: "/api/auth/register"
+          json:
+            firstName: "Test"
+            lastName: "User"
+            email: "test{{ $randomString() }}@example.com"
+            password: "TestPass123!"
+            yearLevel: "G11"
+            schoolId: "test-id-{{ $randomString() }}"
+          capture:
+            - json: "$.token"
+              as: "authToken"
+
+  # Login Flow (30% of traffic)
+  - name: "User Login"
+    weight: 30
+    flow:
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "admin@school.edu"
+            password: "admin123"
+          capture:
+            - json: "$.token"
+              as: "authToken"
+      
+      # Browse forums after login
+      - get:
+          url: "/api/forum/posts"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+
+  # Forum Browsing (40% of traffic)
+  - name: "Forum Browsing"
+    weight: 40
+    flow:
+      # Get forum posts
+      - get:
+          url: "/api/forum/posts"
+      
+      # Get specific post details
+      - get:
+          url: "/api/forum/posts/1"
+      
+      # Get user profile
+      - get:
+          url: "/api/auth/profile"
+
+  # Post Creation (10% of traffic)
+  - name: "Post Creation"
+    weight: 10
+    flow:
+      # Login first
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "admin@school.edu"
+            password: "admin123"
+          capture:
+            - json: "$.token"
+              as: "authToken"
+      
+      # Create a post
+      - post:
+          url: "/api/forum/posts"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          json:
+            title: "Load Test Post {{ $randomString() }}"
+            content: "This is a test post created during load testing."
+            forum: "general"
+            tags: ["test", "performance"]
+
+# Performance thresholds
+expect:
+  - statusCode: 200
+  - contentType: json
+  - hasProperty: success
+  - response_time:
+      p95: 500  # 95% of requests should complete within 500ms
+      p99: 1000 # 99% of requests should complete within 1000ms
+
+# Metrics to track
+metrics:
+  - name: "response_time"
+    unit: "ms"
+  - name: "requests_per_second"
+    unit: "rps"
+  - name: "error_rate"
+    unit: "percent"
+
+# Plugins for enhanced reporting
+plugins:
+  expect: {}
+  metrics-by-endpoint: {}
+  
+# Custom functions for test data generation
+processor: "./load-test-functions.js"

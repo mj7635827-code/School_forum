@@ -162,7 +162,7 @@ const Login = () => {
               {/* Email Field */}
               <div>
                 <label htmlFor="email" className="form-label">
-                  Gmail Address <span className="text-red-500">*</span>
+                  Email Address <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <input

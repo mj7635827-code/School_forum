@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Access Flow - School Forum System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .flowchart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+        }
+        
+        /* Shape Styles */
+        .oval {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-align: center;
+            font-weight: bold;
+            min-width: 150px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .rectangle {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            min-width: 200px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .diamond {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 20px;
+            transform: rotate(45deg);
+            text-align: center;
+            font-weight: bold;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .diamond-text {
+            transform: rotate(-45deg);
+            font-size: 12px;
+            line-height: 1.2;
+        }
+        
+        .parallelogram {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+            padding: 15px 25px;
+            transform: skew(-20deg);
+            text-align: center;
+            font-weight: bold;
+            min-width: 180px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .parallelogram-text {
+            transform: skew(20deg);
+        }
+        
+        .circle {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: #333;
+            padding: 20px;
+            border-radius: 50%;
+            text-align: center;
+            font-weight: bold;
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        /* Arrow Styles */
+        .arrow {
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 20px solid #666;
+            margin: 5px 0;
+        }
+        
+        .arrow-text {
+            font-size: 12px;
+            color: #666;
+            margin: 5px 0;
+            font-weight: bold;
+        }
+        
+        /* Branch Styles */
+        .branch-container {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            max-width: 800px;
+            margin: 20px 0;
+        }
+        
+        .branch {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            margin: 0 10px;
+        }
+        
+        /* Status Colors */
+        .pending { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); color: #8B4513; }
+        .active { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: #2d5016; }
+        .suspended { background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%); color: #4a4a4a; }
+        .banned { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); color: #8B0000; }
+        
+        /* Access Level Colors */
+        .general { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .g11 { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .g12 { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .chat { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        
+        .title {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .legend-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .legend-shape {
+            width: 60px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .legend-oval { border-radius: 20px; }
+        .legend-rectangle { border-radius: 4px; }
+        .legend-diamond { 
+            transform: rotate(45deg); 
+            width: 40px; 
+            height: 40px; 
+        }
+        .legend-diamond-text { transform: rotate(-45deg); font-size: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">🎓 Student Access Flow - School Forum System</h1>
+        
+        <div class="flowchart">
+            <!-- Start -->
+            <div class="oval">
+                START<br>
+                <small>Student Login</small>
+            </div>
+            
+            <div class="arrow"></div>
+            <div class="arrow-text">Enter Credentials</div>
+            
+            <!-- Login Process -->
+            <div class="rectangle">
+                🔐 Authentication<br>
+                <small>Validate Email & Password</small>
+            </div>
+            
+            <div class="arrow"></div>
+            
+            <!-- Check Account Status -->
+            <div class="diamond">
+                <div class="diamond-text">
+                    Account<br>Status?
+                </div>
+            </div>
+            
+            <!-- Status Branches -->
+            <div class="branch-container">
+                <!-- Banned Branch -->
+                <div class="branch">
+                    <div class="arrow-text">BANNED</div>
+                    <div class="arrow"></div>
+                    <div class="rectangle banned">
+                        🚫 Access Denied<br>
+                        <small>Contact Administrator</small>
+                    </div>
+                    <div class="arrow"></div>
+                    <div class="circle">
+                        END
+                    </div>
+                </div>
+                
+                <!-- Pending Branch -->
+                <div class="branch">
+                    <div class="arrow-text">PENDING</div>
+                    <div class="arrow"></div>
+                    <div class="rectangle pending">
+                        ⏳ Limited Access<br>
+                        <small>Email Verification Required</small>
+                    </div>
+                    <div class="arrow"></div>
+                    <div class="diamond">
+                        <div class="diamond-text">
+                            Email<br>Verified?
+                        </div>
+                    </div>
+                    <div class="arrow"></div>
+                    <div class="arrow-text">NO → Upload School ID</div>
+                    <div class="rectangle general">
+                        📋 General Forum Only<br>
+                        <small>Wait for Admin Approval</small>
+                    </div>
+                </div>
+                
+                <!-- Active Branch -->
+                <div class="branch">
+                    <div class="arrow-text">ACTIVE</div>
+                    <div class="arrow"></div>
+                    <div class="rectangle active">
+                        ✅ Full Access<br>
+                        <small>All Features Available</small>
+                    </div>
+                    <div class="arrow"></div>
+                    <div class="diamond">
+                        <div class="diamond-text">
+                            Grade<br>Level?
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Suspended Branch -->
+                <div class="branch">
+                    <div class="arrow-text">SUSPENDED</div>
+                    <div class="arrow"></div>
+                    <div class="rectangle suspended">
+                        ⚠️ Restricted Access<br>
+                        <small>Limited Features</small>
+                    </div>
+                    <div class="arrow"></div>
+                    <div class="rectangle general">
+                        📋 General Forum Only<br>
+                        <small>No Posting Rights</small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Grade Level Access (for Active Users) -->
+            <div class="branch-container">
+                <div class="branch">
+                    <div class="arrow-text">GRADE 11</div>
+                    <div class="arrow"></div>
+                    <div class="rectangle g11">
+                        🎓 G11 Student Dashboard<br>
+                        <small>Access: General + G11 Forums</small>
+                    </div>
+                    <div class="arrow"></div>
+                    <div class="diamond">
+                        <div class="diamond-text">
+                            Badge<br>Level?
+                        </div>
+                    </div>
+                    <div class="arrow"></div>
+                    <div class="arrow-text">Forum Active+ → Chat Access</div>
+                    <div class="rectangle chat">
+                        💬 Student Chat<br>
+                        <small>+ Private Messages</small>
+                    </div>
+                </div>
+                
+                <div class="branch">
+                    <div class="arrow-text">GRADE 12</div>
+                    <div class="arrow"></div>
+                    <div class="rectangle g12">
+                        🎓 G12 Student Dashboard<br>
+                        <small>Access: General + G12 Forums</small>
+                    </div>
+                    <div class="arrow"></div>
+                    <div class="diamond">
+                        <div class="diamond-text">
+                            Badge<br>Level?
+                        </div>
+                    </div>
+                    <div class="arrow"></div>
+                    <div class="arrow-text">Forum Active+ → Chat Access</div>
+                    <div class="rectangle chat">
+                        💬 Student Chat<br>
+                        <small>+ Private Messages</small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Final Dashboard -->
+            <div class="arrow"></div>
+            <div class="rectangle">
+                📊 Student Dashboard<br>
+                <small>Points, Badges, Activity Stats</small>
+            </div>
+            
+            <div class="arrow"></div>
+            
+            <!-- Available Features -->
+            <div class="parallelogram">
+                <div class="parallelogram-text">
+                    🌟 Available Features Based on Access Level
+                </div>
+            </div>
+            
+            <!-- Feature Matrix -->
+            <div class="branch-container">
+                <div class="branch">
+                    <div class="rectangle general">
+                        📋 General Access<br>
+                        <small>• View General Forum<br>• Basic Profile<br>• Read-only Mode</small>
+                    </div>
+                </div>
+                
+                <div class="branch">
+                    <div class="rectangle g11">
+                        🎓 G11 Access<br>
+                        <small>• General + G11 Forums<br>• Post & Reply<br>• Points & Badges<br>• Follow Users</small>
+                    </div>
+                </div>
+                
+                <div class="branch">
+                    <div class="rectangle g12">
+                        🎓 G12 Access<br>
+                        <small>• General + G12 Forums<br>• Post & Reply<br>• Points & Badges<br>• Follow Users</small>
+                    </div>
+                </div>
+                
+                <div class="branch">
+                    <div class="rectangle chat">
+                        💬 Chat Access<br>
+                        <small>• Student Chatbox<br>• Private Messages<br>• Advanced Features<br>• Full Engagement</small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- End -->
+            <div class="arrow"></div>
+            <div class="oval">
+                🎯 USER EXPERIENCE<br>
+                <small>Based on Verification & Grade Level</small>
+            </div>
+        </div>
+        
+        <!-- Legend -->
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-shape legend-oval oval">START/END</div>
+                <span>Start/End Points</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-shape legend-rectangle rectangle">PROCESS</div>
+                <span>System Processes</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-shape legend-diamond diamond">
+                    <div class="legend-diamond-text">DECISION</div>
+                </div>
+                <span>Decision Points</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-shape legend-rectangle parallelogram">
+                    <div class="parallelogram-text">INPUT/OUTPUT</div>
+                </div>
+                <span>Data Flow</span>
+            </div>
+        </div>
+        
+        <!-- Summary -->
+        <div style="margin-top: 30px; padding: 20px; background: #e3f2fd; border-radius: 8px;">
+            <h3>📋 Access Level Summary:</h3>
+            <ul style="margin: 10px 0; padding-left: 20px;">
+                <li><strong>PENDING:</strong> General Forum (read-only) → Upload School ID → Wait for approval</li>
+                <li><strong>ACTIVE G11:</strong> General + G11 Forums → Full posting rights → Badge progression</li>
+                <li><strong>ACTIVE G12:</strong> General + G12 Forums → Full posting rights → Badge progression</li>
+                <li><strong>FORUM ACTIVE+ Badge:</strong> Unlock Student Chat + Private Messages</li>
+                <li><strong>SUSPENDED:</strong> Limited access, no posting rights</li>
+                <li><strong>BANNED:</strong> Complete access denial</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

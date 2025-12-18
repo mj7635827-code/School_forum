@@ -1,28 +1,41 @@
 @echo off
-echo ========================================
-echo DATABASE RESET SCRIPT
-echo ========================================
+echo 🔄 Resetting School Forum Database...
 echo.
-echo WARNING: This will DELETE ALL DATA!
-echo - All users will be deleted
-echo - All posts and replies will be deleted
-echo - All chat messages will be deleted
-echo - AUTO_INCREMENT will reset to 1
-echo.
-echo Press Ctrl+C to cancel, or
-pause
 
-cd backend
-echo.
-echo Running reset script...
-node reset-database.js
+echo 📦 Step 1: Setting up main database structure...
+node backend/src/utils/setupDatabase.js
 
 echo.
-echo ========================================
-echo Reset complete!
-echo ========================================
+echo 📦 Step 2: Running all migrations...
+node -e "
+const { setupDatabase } = require('./backend/src/utils/setupDatabase.js');
+const { runMigrations } = require('./backend/src/migrations/index.js');
+
+async function resetDatabase() {
+  console.log('🚀 Starting complete database reset...');
+  
+  // First setup the main database and users table
+  const setupSuccess = await setupDatabase();
+  if (!setupSuccess) {
+    console.error('❌ Database setup failed!');
+    process.exit(1);
+  }
+  
+  // Then run all migrations
+  await runMigrations();
+  
+  console.log('✅ Database reset completed successfully!');
+}
+
+resetDatabase().catch(console.error);
+"
+
 echo.
-echo Now restart your backend server with:
-echo   npm start
+echo ✅ Database reset completed!
+echo.
+echo 🔑 Demo Accounts Created:
+echo    Admin: admin@school.edu / AdminPass123!
+echo    Moderator: moderator@school.edu / ModPass123!
+echo    Student: student@gmail.com / StudentPass123!
 echo.
 pause
